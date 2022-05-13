@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="external">
+      <UniqueIdentifier>{2839F3DC-1406-4EE8-3D1F-3C90294B8376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\imgui">
+      <UniqueIdentifier>{92841FBB-7E52-13C1-67E6-83E75353EF25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\imgui\include">
+      <UniqueIdentifier>{051EE9FD-F117-1250-DA84-A860C61D78BC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\imgui\include\imgui">
+      <UniqueIdentifier>{2FDBF651-1B96-E6FD-C44D-5F48B0E7308E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\external\imgui\include\imgui\imgui.cpp">
+      <Filter>external\imgui\include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\include\imgui\imgui_demo.cpp">
+      <Filter>external\imgui\include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\include\imgui\imgui_draw.cpp">
+      <Filter>external\imgui\include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\include\imgui\imgui_impl_opengl3.cpp">
+      <Filter>external\imgui\include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\include\imgui\imgui_impl_sdl.cpp">
+      <Filter>external\imgui\include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\include\imgui\imgui_stdlib.cpp">
+      <Filter>external\imgui\include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\include\imgui\imgui_tables.cpp">
+      <Filter>external\imgui\include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\imgui\include\imgui\imgui_widgets.cpp">
+      <Filter>external\imgui\include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

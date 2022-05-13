@@ -12,16 +12,17 @@ tdir = "bin/%{cfg.buildcfg}/%{prj.name}"
 odir = "bin-obj/%{cfg.buildcfg}/%{prj.name}"
 -- External Dependencies
 externals = {}
---externals["sdl2"] = "external/sdl2"
+externals["sdl2"] = "external/sdl2"
+externals["imgui"] = "external/imgui"
 --externals["spdlog"] = "external/spdlog"
---externals["glad"] = "external/glad"
+externals["glad"] = "external/glad"
 --externals["glm"] = "external/glm"
 externals["stb"] = "external/stb"
 --externals["yaml"] = "external/yaml"
 --externals["perlinNoise"] = "external/perlinNoise"
 
 -- process glad before anything else
---include "external/glad"
+include"external/glad"
 
 --include "external/yaml"
 
@@ -43,9 +44,10 @@ project "VisualCrypto"
     sysincludedirs
     {
         "%{prj.name}/include",
-       -- "%{externals.sdl2}/include",
+        "%{externals.sdl2}/include",
+        "%{externals.imgui}/include",
        -- "%{externals.spdlog}/include",
-       -- "%{externals.glad}/include",
+        "%{externals.glad}/include",
        -- "%{externals.glm}/include",
           "%{externals.stb}/include"
        -- "%{externals.yaml}/include",
@@ -54,14 +56,14 @@ project "VisualCrypto"
 
     libdirs
     {
-        --"%{externals.sdl2}/lib",
+        "%{externals.sdl2}/lib",
     }
 
     links
     {
-        --"glad",
+        "glad",
       --  "yaml",
-       -- "SDL2.lib"
+        "SDL2.lib"
     }
 
     files
@@ -72,12 +74,13 @@ project "VisualCrypto"
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
         "%{prj.name}/src/**.glsl",
-        "%{prj.name}/**.natvis"
+        "%{prj.name}/**.natvis",
+        "%{externals.imgui}/include/**.cpp"       
     }
     
     defines
     {
-        --"GLFW_INCLUDE_NONE" -- ensure glad doesn't include glfw
+        "GLFW_INCLUDE_NONE" -- ensure glad doesn't include glfw
     }
     systemversion "latest"
     
