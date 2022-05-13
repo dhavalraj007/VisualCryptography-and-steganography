@@ -2,6 +2,7 @@
 #include<vector>
 #include<random>
 #include<algorithm>
+#include<filesystem>
 #include<string>
 #define STB_IMAGE_IMPLEMENTATION
 #include"stb/stb_image.h"
@@ -38,6 +39,7 @@ struct PixelRGBA
 };
 static PixelRGBA blackRGBA{ 0,0,0,255 };
 static PixelRGBA whiteRGBA{ 255,255,255,10 };
+static std::string srcDir;
 int to1d(int x, int y, int xlim) { return xlim * y + x; }
 
 void setSubPixel(PixelRGBA* imgData, int x, int y, int xlim, bool topLeft, bool topRight, bool bottomLeft, bool bottomRight)
@@ -84,15 +86,16 @@ std::vector<bool> BWGeneration(const std::string& name, int& inX, int& inY, int&
 		else
 			outPx = whiteRGBA;
 	}
-	stbi_write_png(("BW" + name).c_str(), inX, inY, 4, reinterpret_cast<unsigned char*>(bwData), inX * 4);
-	std::cout << ("BW" + name) << "written." << std::endl;
+
+	stbi_write_png(("BW-" + std::filesystem::path(name).filename().string()).c_str(), inX, inY, 4, reinterpret_cast<unsigned char*>(bwData), inX * 4);
+	//std::cout << ("BW-" + std::filesystem::path(name).filename().string()).c_str() << " written." << std::endl;
 	return origIsBlack;
 }
 
-int doVC()
+int doVC(const std::string& src, const std::string& outName1, const std::string& outName2)
 {
 	int inX, inY, inN;
-	auto origIsBlack = BWGeneration("Naruto.jpg", inX, inY, inN);
+	auto origIsBlack = BWGeneration(src, inX, inY, inN);
 
 	PixelRGBA* img1data = new PixelRGBA[inX * inY * 4];
 	PixelRGBA* img2data = new PixelRGBA[inX * inY * 4];
@@ -134,21 +137,23 @@ int doVC()
 		}
 	}
 
-	stbi_write_png("outputImage1.png", inX * 2, inY * 2, 4, reinterpret_cast<unsigned char*>(img1data), (inX * 2) * 4);
-	stbi_write_png("outputImage2.png", inX * 2, inY * 2, 4, reinterpret_cast<unsigned char*>(img2data), (inX * 2) * 4);
+	stbi_write_png((srcDir + "/" + outName1).c_str(), inX * 2, inY * 2, 4, reinterpret_cast<unsigned char*>(img1data), (inX * 2) * 4);
+	std::cout << (srcDir + "/" + outName1) << " written." << std::endl;
+	stbi_write_png((srcDir + "/" + outName2).c_str(), inX * 2, inY * 2, 4, reinterpret_cast<unsigned char*>(img2data), (inX * 2) * 4);
+	std::cout << (srcDir + "/" + outName2) << " written." << std::endl;
 	return 0;
 }
-int doVS()
+int doVS(const std::string& src,const std::string& src1,const std::string& src2,const std::string& outName1,const std::string& outName2)
 {
 	//read source image to be encrypted
 	int inX, inY, inN;
-	auto origIsBlack = BWGeneration("Naruto.jpg", inX, inY, inN);
+	auto origIsBlack = BWGeneration(src, inX, inY, inN);
 
 	//read source image 1 and source image 2
 	int src1InX, src1InY, src1InN;
-	auto src1IsBlack = BWGeneration("src1.jpg", src1InX, src1InY, src1InN);
+	auto src1IsBlack = BWGeneration(src1, src1InX, src1InY, src1InN);
 	int src2InX, src2InY, src2InN;
-	auto src2IsBlack = BWGeneration("src2.jpg", src2InX, src2InY, src2InN);
+	auto src2IsBlack = BWGeneration(src2, src2InX, src2InY, src2InN);
 
 	PixelRGBA* img1data = new PixelRGBA[inX * inY * 4];
 	PixelRGBA* img2data = new PixelRGBA[inX * inY * 4];
@@ -227,12 +232,42 @@ int doVS()
 			}
 		}
 	}
-
-	stbi_write_png("outputImage1.png", inX * 2, inY * 2, 4, reinterpret_cast<unsigned char*>(img1data), (inX * 2) * 4);
-	stbi_write_png("outputImage2.png", inX * 2, inY * 2, 4, reinterpret_cast<unsigned char*>(img2data), (inX * 2) * 4);
+	
+	stbi_write_png((srcDir+"/"+outName1).c_str(), inX * 2, inY * 2, 4, reinterpret_cast<unsigned char*>(img1data), (inX * 2) * 4);
+	std::cout << (srcDir + "/" + outName1) << " written." << std::endl;
+	stbi_write_png((srcDir+"/"+outName2).c_str(), inX * 2, inY * 2, 4, reinterpret_cast<unsigned char*>(img2data), (inX * 2) * 4);
+	std::cout << (srcDir + "/" + outName2) << " written." << std::endl;
 	return 0;
 }
 int main()
 {
-	return doVS();
+	int choice;
+	std::cout << "enter 1 for visual cryptography \nenter 2 for visual stegnography\n\n";
+	std::cin >> choice;
+	std::string src, src1, src2, outName1, outName2;
+	switch(choice)
+	{
+	case 2:
+		std::cout << "enter image to be encrypted:" << std::endl;
+		std::cin >> src;
+		srcDir = std::filesystem::path(src).remove_filename().string();
+		std::cout << "enter source image 1:" << std::endl;
+		std::cin >> src1;
+		std::cout << "enter source image 2:" << std::endl;
+		std::cin >> src2;
+		outName1 = ("cipher-" + std::filesystem::path(src1).filename().replace_extension(".png").string());
+		outName2 = ("cipher-" + std::filesystem::path(src2).filename().replace_extension(".png").string());
+		doVS(src, src1, src2, outName1, outName2);
+		break;
+	case 1:
+		std::cout << "enter image to be encrypted:" << std::endl;
+		std::cin >> src;
+		srcDir = std::filesystem::path(src).remove_filename().string();
+		outName1 = ("cipher1-" + std::filesystem::path(src).filename().replace_extension(".png").string());
+		outName2 = ("cipher2-" + std::filesystem::path(src).filename().replace_extension(".png").string());
+		doVC(src,outName1,outName2);
+		break;
+	default:
+		std::cout << "invalid command\n";
+	}
 }
